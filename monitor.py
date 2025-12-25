@@ -23,7 +23,6 @@ def send_discord_message(message):
         print("Discord Webhook URL not found. Skipping notification.")
         return
     
-    # Discord webhooks expect a JSON payload, usually with a 'content' key
     payload = {"content": message}
     
     try:
@@ -36,7 +35,7 @@ def send_discord_message(message):
 def main():
     """Monitors Binance trades and sends Discord notifications."""
     if not API_KEY or not API_SECRET:
-        print("Binance API credentials not set. Have you updated your .env file?")
+        print("Binance API credentials not set. Have you created a .env file?")
         return
 
     client = Client(API_KEY, API_SECRET)
@@ -45,7 +44,6 @@ def main():
 
     while True:
         try:
-            # Fetch the most recent trade
             trades = client.get_my_trades(symbol=SYMBOL, limit=1)
             if trades:
                 current_trade = trades[0]
@@ -54,7 +52,6 @@ def main():
                 print(f"Current last trade ID: {current_trade_id}")
 
                 if last_trade_id is None:
-                    # First run, just store the ID
                     last_trade_id = current_trade_id
                     print(f"Initial trade ID set to: {last_trade_id}")
 
@@ -62,12 +59,8 @@ def main():
                     print(f"New trade detected! ID: {current_trade_id}")
                     last_trade_id = current_trade_id
                     
-                    # Format the message for Discord
-                    side = "KUPIONO" if current_trade['isBuyer'] else "SPRZEDANO"
-                    qty = current_trade['qty']
-                    price = current_trade['price']
-                    
-                    message = f"🔔 NOWA TRANSAKCJA: {side} {qty} BTC @ {price} PLN"
+                    side = "KUPNO" if current_trade['isBuyer'] else "SPRZEDAŻ"
+                    message = f"🔔 ZMIANA STANU KONTA: {side} {current_trade['qty']} BTC @ {current_trade['price']} PLN"
                     
                     send_discord_message(message)
             else:
@@ -75,11 +68,7 @@ def main():
 
         except Exception as e:
             print(f"An error occurred: {e}")
-            # Optional: send error to Discord
-            # if DISCORD_WEBHOOK_URL:
-            #     send_discord_message(f"An error occurred in the Binance monitor: {e}")
 
-        # Wait for 60 seconds before checking again
         time.sleep(60)
 
 if __name__ == "__main__":
