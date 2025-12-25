@@ -1,0 +1,83 @@
+# Binance Trade Monitor
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
+Prosty, ale skuteczny monitor transakcji na giełdzie Binance, który wysyła powiadomienia o nowych transakcjach na wybrany kanał Discord za pomocą webhooka. Skrypt jest gotowy do uruchomienia w kontenerze Docker.
+
+---
+
+## 🚀 Funkcjonalności
+
+- **Monitorowanie transakcji**: Śledzi ostatnie transakcje dla określonej pary walutowej (domyślnie `BTCPLN`).
+- **Powiadomienia na Discord**: Wysyła natychmiastowe powiadomienia o nowych transakcjach.
+- **Elastyczna konfiguracja**: Wszystkie kluczowe dane (klucze API, URL webhooka) są zarządzane przez zmienne środowiskowe.
+- **Gotowy na Docker**: Zawiera `Dockerfile` do łatwego budowania i uruchamiania w izolowanym środowisku.
+- **Lokalne testowanie**: Wsparcie dla pliku `.env` dzięki `python-dotenv` ułatwia uruchamianie lokalne.
+
+## 📋 Wymagania
+
+- Python 3.10+
+- Docker (zalecany do uruchomienia)
+- Konto na giełdzie Binance z wygenerowanymi kluczami API.
+- Serwer Discord z uprawnieniami do tworzenia webhooków.
+
+## 🛠️ Instalacja i Konfiguracja
+
+1.  **Sklonuj repozytorium:**
+    ```bash
+    git clone https://github.com/MrDead1987/binance-monitor.git
+    cd binance-monitor
+    ```
+
+2.  **Skonfiguruj zmienne środowiskowe:**
+    Stwórz plik `.env` w głównym katalogu projektu, kopiując lub zmieniając nazwę pliku `.env.example` (jeśli istnieje) lub tworząc go od zera. Wypełnij go swoimi danymi:
+    ```ini
+    # Binance API Credentials
+    BINANCE_API_KEY="TWOJ_KLUCZ_API_BINANCE"
+    BINANCE_API_SECRET="TWOJ_SEKRET_API_BINANCE"
+
+    # Discord Webhook URL
+    DISCORD_WEBHOOK_URL="TWOJ_DISCORD_WEBHOOK_URL"
+    ```
+
+3.  **Zainstaluj zależności (dla uruchomienia lokalnego):**
+    ```bash
+    pip install -r requirements.txt
+    ```
+
+## ⚙️ Użytkowanie
+
+### 1. Uruchomienie lokalne
+
+Upewnij się, że masz poprawnie skonfigurowany plik `.env`.
+```bash
+python monitor.py
+```
+
+### 2. Uruchomienie za pomocą Docker (zalecane)
+
+**a) Zbuduj obraz Docker:**
+```bash
+docker build -t binance-monitor .
+```
+
+**b) Uruchom kontener z przekazaniem zmiennych środowiskowych:**
+Zastąp wartości `your_...` swoimi danymi lub, jeśli używasz shella wspierającego `source`, wczytaj je z pliku `.env`.
+```bash
+docker run --name binance-monitor-app --rm \
+  -e BINANCE_API_KEY="your_binance_api_key" \
+  -e BINANCE_API_SECRET="your_binance_api_secret" \
+  -e DISCORD_WEBHOOK_URL="your_discord_webhook_url" \
+  binance-monitor
+```
+Możesz również użyć opcji `--env-file ./.env`, aby wczytać zmienne bezpośrednio z pliku `.env`:
+```bash
+docker run --name binance-monitor-app --rm --env-file ./.env binance-monitor
+```
+
+---
+
+
+## 📄 Licencja
+
+Projekt jest udostępniany na licencji MIT. Zobacz plik [LICENSE](LICENSE) po więcej szczegółów.
